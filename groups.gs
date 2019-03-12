@@ -94,6 +94,16 @@ function removeMember(group, member) {
 }
 
 function addMember(group, email) {
+  try {
+    if(AdminDirectory.Members.hasMember(group.email, email).isMember) {
+      // This could be a false positive if an alias has been used
+      return;
+    }
+  } catch (e) {
+    Logger.log("Failed to check email " + email + ", " + e);
+    return;
+  }
+  
   Logger.log("Adding " + email + " to " + group.email);
   if(!SIMULATE) {
     var member = {
