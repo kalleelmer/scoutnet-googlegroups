@@ -43,7 +43,7 @@ function getEmails(list, primaryOnly) {
     for(var e in person) {
       //Logger.log(e);
       if(e.indexOf("email") == 0) {
-        emails[person[e].value] = true;
+        emails[person[e].value.toLowerCase()] = true;
       }
     }
   }
@@ -71,9 +71,10 @@ function updateGroup(group, list) {
   // Check all current members and remove as necessary
   for(var i = 0; i < members.length; i++) {
     var member = members[i];
-    if(emails[member.email]) {
+    var email = member.email.toLowerCase();
+    if(emails[email]) {
       // We no longer need to add them
-      delete emails[member.email];
+      delete emails[email];
     } else {
       removeMember(group, member);
     }
@@ -86,9 +87,9 @@ function updateGroup(group, list) {
 }
 
 function removeMember(group, member) {
-  Logger.log("Removing " + member.email + " from " + group.email);
+  Logger.log("Removing " + member.email + " (" + member.id + ") from " + group.email);
   if(!SIMULATE) {
-    AdminDirectory.Members.remove(group.id, member.id);
+    AdminDirectory.Members.remove(group.email, member.email);
   }
 }
 
@@ -99,6 +100,10 @@ function addMember(group, email) {
       email: email,
       role: 'MEMBER'
     };
-    AdminDirectory.Members.insert(member, group.id);
+    try {
+      AdminDirectory.Members.insert(member, group.id);
+    } catch (e) {
+      Logger.log("Failed to add email " + email + ", " + e);
+    }
   }
 }
