@@ -12,7 +12,7 @@ function sync() {
 }
 
 function getGroups() {
-  var response = AdminDirectory.Groups.list({domain:"scoutkarenfinn.se"});
+  var response = AdminDirectory.Groups.list({domain: DOMAIN});
   var groups = response.groups;
   return groups;
 }
@@ -58,7 +58,9 @@ function getMembers(group) {
   var response = {};
   do {
     response = AdminDirectory.Members.list(group.id, {pageToken: response.nextPageToken});
-    members = members.concat(response.members);
+    if(response.members) {
+      members = members.concat(response.members);
+    }
   } while (response.nextPageToken);
   return members;
 }
@@ -87,23 +89,13 @@ function updateGroup(group, list) {
 }
 
 function removeMember(group, member) {
-  Logger.log("Removing " + member.email + " (" + member.id + ") from " + group.email);
+  Logger.log("Removing " + member.email + " from " + group.email);
   if(!SIMULATE) {
     AdminDirectory.Members.remove(group.email, member.email);
   }
 }
 
 function addMember(group, email) {
-  try {
-    if(AdminDirectory.Members.hasMember(group.email, email).isMember) {
-      // This could be a false positive if an alias has been used
-      return;
-    }
-  } catch (e) {
-    Logger.log("Failed to check email " + email + ", " + e);
-    return;
-  }
-  
   Logger.log("Adding " + email + " to " + group.email);
   if(!SIMULATE) {
     var member = {
