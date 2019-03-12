@@ -1,0 +1,10 @@
+// G Suite domain name
+var DOMAIN = "scoutkarenfinn.se";
+
+// API path to all email lists of the group
+// In Scoutnet, it's called "Get a csv/xls/json list of members, based on mailing lists you have set up"
+var SCOUTNET_LISTS_URL = "https://www.scoutnet.se/api/group/customlists?id=XXXX&key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+
+// If true, log what would have happended, but don't actually add or remove anyone
+var SIMULATE = false;
+
