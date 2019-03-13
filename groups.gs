@@ -98,9 +98,13 @@ function removeMember(group, member) {
 function addMember(group, email) {
   Logger.log("Adding " + email + " to " + group.email);
   if(!SIMULATE) {
+    var role = "MEMBER";
+    if(email.indexOf("@" + DOMAIN) > 0) {
+      role = "MANAGER";
+    }
     var member = {
       email: email,
-      role: 'MEMBER'
+      role: role
     };
     try {
       AdminDirectory.Members.insert(member, group.id);
